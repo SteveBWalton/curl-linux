@@ -14,7 +14,7 @@ PROCESSOR = $(shell uname -m)
 # 	prefix LIBS with -l
 # 	prefix LIBDIR with -L
 #
-LIBS :=
+LIBS := -lcurl
 LIBDIR :=
 
 OPTIONS := -Wall -std=c++17
@@ -22,7 +22,7 @@ OPTIONS := -Wall -std=c++17
 #
 # Header files.
 #
-HEADERS := curl-test.o
+HEADERS := curl-test.h http-simple.h
 
 #
 # Source objects (prefix with obj/)
@@ -39,7 +39,7 @@ obj/curl-test.o : curl-test.cpp $(HEADERS)
 	@mkdir -p $(@D)
 	g++ -c $(OPTIONS) -o obj/curl-test.o curl-test.cpp
 
-obj/http_simple.o : http-simple.cpp $(HEADERS)
+obj/http-simple.o : http-simple.cpp $(HEADERS)
 	@mkdir -p $(@D)
 	g++ -c $(OPTIONS) -o obj/http-simple.o http-simple.cpp
 
