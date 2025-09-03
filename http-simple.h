@@ -12,7 +12,7 @@
 class HttpSimple
 {
 public:
-    HttpSimple();
+    HttpSimple(const char*, const char*, const char*, bool);
     ~HttpSimple();
 
 private:
