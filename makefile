@@ -28,7 +28,8 @@ HEADERS := curl-test.o
 # Source objects (prefix with obj/)
 #
 OBJS := \
-obj/curl-test.o
+obj/curl-test.o \
+obj/http-simple.o
 
 bin/curl-test : $(OBJS)
 	@mkdir -p $(@D)
@@ -37,6 +38,11 @@ bin/curl-test : $(OBJS)
 obj/curl-test.o : curl-test.cpp $(HEADERS)
 	@mkdir -p $(@D)
 	g++ -c $(OPTIONS) -o obj/curl-test.o curl-test.cpp
+
+obj/http_simple.o : http-simple.cpp $(HEADERS)
+	@mkdir -p $(@D)
+	g++ -c $(OPTIONS) -o obj/http-simple.o http-simple.cpp
+
 
 clean:
 	-rm -f bin/curl-test
