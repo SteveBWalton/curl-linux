@@ -4,13 +4,7 @@
 #pragma once
 
 // System Headers.
-#include <vector>
-#include <thread>
-#include <queue>
-#include <mutex>
-#include <condition_variable>
-#include <atomic>
-#include <functional>
+#include <string>
 
 
 
@@ -20,4 +14,16 @@ class HttpSimple
 public:
     HttpSimple();
     ~HttpSimple();
+
+private:
+    // The response from the html server.
+    std::string _response;
+    // The response code from the html server.  200 is success.
+    long _responseCode;
+
+public:
+    // The response from the html server.
+    std::string getResponse();
+    // The response code from the html server.  200 is success.
+    long getResponseCode();
 };

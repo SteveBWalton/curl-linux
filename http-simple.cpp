@@ -7,6 +7,7 @@
 
 // System Headers.
 #include <iostream> // cout() Remove this, debugging only.
+#include <string>
 #include <curl/curl.h>
 
 static size_t writeCallBack
@@ -29,7 +30,7 @@ HttpSimple::HttpSimple()
 {
     std::cout << "HttpSimple constructor." << std::endl;
 
-    std::string readBuffer;
+    _response = "";
 
     CURL* curl = curl_easy_init();
     if (curl)
@@ -51,7 +52,7 @@ HttpSimple::HttpSimple()
 
         // Add the callback function.
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, writeCallBack);
-        curl_easy_setopt(curl, CURLOPT_WRITEDATA, &readBuffer);
+        curl_easy_setopt(curl, CURLOPT_WRITEDATA, &_response);
 
         // This skips the verification of the server certificate (https).
         curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0L);
@@ -66,13 +67,44 @@ HttpSimple::HttpSimple()
         // Override the POST implied by CURLOPT_POSTFIELDS.
         curl_easy_setopt(curl, CURLOPT_CUSTOMREQUEST, "GET");
 
-        // Send the request
+        // Set the timeout to 60 seconds.
+        curl_easy_setopt(curl, CURLOPT_TIMEOUT, 60L);
+
+        // Send the request.
         std::cout << "Send Request." << std::endl;
+        _responseCode = 0;
         CURLcode curlCode = curl_easy_perform(curl);
-        std::cout << "Request Result " << curlCode << std::endl;
+
+        // Check the result of the request.  CURLE_OK is zero and this represents success.
+        switch (curlCode)
+        {
+        case CURLE_OK: // Success (0).
+            // This only means that the server replied.
+            // The server could reply with an error message.
+
+            // Get the response code.
+            curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &_responseCode);
+
+            // Show the html response code.
+            std::cout << "Http Response Code " << _responseCode << std::endl;
+
+            break;
+
+        case CURLE_OPERATION_TIMEDOUT: // Timeout (??).
+            std::cout << "Http request timed out." << std::endl;
+            break;
+
+        case CURLE_COULDNT_CONNECT: // No connection (7).
+            std::cout << "Could not connect to server." << std::endl;
+            break;
+
+        default: // Unknown error.
+            std::cout << "Error code " << curlCode << std::endl;
+            break;
+        }
 
         // Display the read buffer.
-        std::cout << readBuffer << std::endl;
+        std::cout << _response << std::endl;
 
         // Close the curl connection.
         curl_easy_cleanup(curl);
@@ -87,4 +119,20 @@ HttpSimple::HttpSimple()
 HttpSimple::~HttpSimple()
 {
     std::cout << "HttpSimple destructor." << std::endl;
+}
+
+
+
+// The response from the html server.
+std::string HttpSimple::getResponse()
+{
+    return _response;
+}
+
+
+
+// The response code from the html server.  200 is success.
+long HttpSimple::getResponseCode()
+{
+    return _responseCode;
 }
