@@ -1,4 +1,4 @@
-/// Implmentation for the Parallel class.
+/// Implementation for the Parallel class.
 ///@file parallel.cpp
 
 // File Header.

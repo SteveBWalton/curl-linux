@@ -1,4 +1,4 @@
-/// Implmentation for the HttpSimple class.
+/// Implementation for the HttpSimple class.
 /// Class to represent a request to a http server.
 ///@file http-simple.cpp
 
